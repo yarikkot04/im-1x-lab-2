@@ -1,5 +1,5 @@
 const { readDataFromFile, checkFormat, parseLine } = require('./src/parseLine')
-const { HandleKeyPress } = require('./src/utilityFunctions')
+const { HandleKeyPress, Calculate } = require('./src/utilityFunctions')
 const CalculatorState = require('./src/CalculatorState')
 
 
@@ -129,6 +129,24 @@ describe('Checking functions that work with the parsed expression', () => {
             expect(calcStateObj.op).toBe('/')
             expect(calcStateObj.secondNum).toBe('5')
             expect(calcStateObj.equal).toBe('')
+        })
+    })
+
+    describe('Calculate function : ', () => {
+        test('The function must correctly calculate the expression', () => {
+            const first_data = ['1', '5', '*', '4']
+            const second_data = ['1', '5', '0', '*', '8', '=']
+            const third_data = ['3', '3', '/', '5', '=']
+            const fourth_data = ['1', '5']
+            const fifth_data = ['3', '3', '+']
+            const six_data = ['7', '5', '-', '8', '2', '=']
+
+            expect(Calculate(first_data)).toBe(4)
+            expect(Calculate(second_data)).toBe(1200)
+            expect(Calculate(third_data)).toBe(6)
+            expect(Calculate(fourth_data)).toBe(15)
+            expect(Calculate(fifth_data)).toBe(33)
+            expect(Calculate(six_data)).toBe(-7)
         })
     })
 })
