@@ -1,4 +1,4 @@
-const { readDataFromFile, checkFormat } = require('./src/parseLine')
+const { readDataFromFile, checkFormat, parseLine } = require('./src/parseLine')
 
 describe('Checking functions that read and parse data from files', () => {
     describe('readDataFromFile function : ', () => {
@@ -49,6 +49,21 @@ describe('Checking functions that read and parse data from files', () => {
             expect(checkFormat(eleventh_expr)).toEqual(['The expression must be on one line!', false])
             expect(checkFormat(twelfth_expr)).toEqual(['Missing digit!', false])
             expect(checkFormat(thirteenth)).toEqual(['You have entered an incorrect data type, only integers should be entered!', false])
+        })
+    })
+    describe('parseLine function : ', () => {
+        test('The function must return parsed data, if correct, otherwise return an error', async () => {
+            const expected_correct_first_data = ['1', '2', '-', '4', '=']
+            const expected_correct_second_data = ['1', '5', '*', '4']
+
+            const first__correct_data = await parseLine('./testfiles/parseLine/input_1.txt')
+            const second__correct_data = await parseLine('./testfiles/parseLine/input_2.txt')
+            expect(first__correct_data).toEqual(expected_correct_first_data)
+            expect(second__correct_data).toEqual(expected_correct_second_data)
+
+            // If the input format is incorrect, it should throw an error
+            expect(parseLine('./testfiles/parseLine/input_3.txt')).rejects.toThrow()
+            expect(parseLine('./testfiles/parseLine/input_4.txt')).rejects.toThrow()
         })
     })
 })

@@ -1,5 +1,15 @@
 const fs = require('fs')
 
+async function parseLine(pathToFile) {
+    const data = await readDataFromFile(pathToFile)
+    const keyNamesArr = data.split('')
+    const [typeOfErr, verifiedDataStatus] = checkFormat(keyNamesArr)
+    if (!verifiedDataStatus) {
+        throw new Error(`${typeOfErr}`)
+    }
+    return keyNamesArr.join('').replaceAll(' ','').split('')
+}
+
 function readDataFromFile(pathToFile) {
     return new Promise((resolve, reject) => {
         fs.readFile(pathToFile, 'utf-8', (err, data) => {
@@ -11,7 +21,6 @@ function readDataFromFile(pathToFile) {
         })
     })
 }
-
 
 function checkFormat(dataArr) {
     const opArr = ['+', '-', '*', '/', '=']
@@ -59,8 +68,8 @@ function checkFormat(dataArr) {
     return ['Everything is correct!', true]
 }
 
-
 module.exports = {
     readDataFromFile,
-    checkFormat
+    checkFormat,
+    parseLine
 }
