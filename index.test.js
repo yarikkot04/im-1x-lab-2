@@ -1,6 +1,7 @@
 const { readDataFromFile, checkFormat, parseLine } = require('./src/parseLine')
 const { HandleKeyPress, Calculate } = require('./src/utilityFunctions')
 const CalculatorState = require('./src/CalculatorState')
+const writeFile = require('./src/writeFile')
 
 
 describe('Checking functions that read and parse data from files', () => {
@@ -150,4 +151,25 @@ describe('Checking functions that work with the parsed expression', () => {
         })
     })
 })
+
+describe('Checking the function that writes the result to a file', () => {
+    describe('writeFile function : ', () => {
+
+        test('The function must correctly write the result to a file', async () => {
+            const first_result = 15
+            const second_result = 7
+            const third_result = -30
+            const fourth_result = 0
+            writeFile('testfiles/writeFile/output-1.txt',first_result)
+            writeFile('testfiles/writeFile/output-2.txt',second_result)
+            writeFile('testfiles/writeFile/output-3.txt',third_result)
+            writeFile('testfiles/writeFile/output-4.txt',fourth_result)
+            expect(await readDataFromFile('./testfiles/writeFile/output-1.txt')).toBe('15')
+            expect(await readDataFromFile('./testfiles/writeFile/output-2.txt')).toBe('7')
+            expect(await readDataFromFile('./testfiles/writeFile/output-3.txt')).toBe('-30')
+            expect(await readDataFromFile('./testfiles/writeFile/output-4.txt')).toBe('0')
+        })
+    })
+})
+
 
