@@ -1,4 +1,4 @@
-const readDataFromFile  = require('./src/parseLine')
+const { readDataFromFile, checkFormat } = require('./src/parseLine')
 
 describe('Checking functions that read and parse data from files', () => {
     describe('readDataFromFile function : ', () => {
@@ -17,6 +17,38 @@ describe('Checking functions that read and parse data from files', () => {
             expect(second_data).toBe(second_expectedData)
             expect(third_data).toBe(third_expectedData)
             expect(fourth_data).toBe(fourth_expectedData)
+        })
+    })
+    describe('checkFormat function : ', () => {
+        test('The function should check whether the condition is spelled correctly in the file', () => {
+            const first_expr = '5 5 0 + 6 7 5 5 5 ='
+            const second_expr = ' 5 + 1 ='
+            const third_expr = '1 1 * 2 = '
+            const fourth_expr = '2 34 + 8 ='
+            const fifth_expr = '2 5 + + 17 ='
+            const sixth_expr = '3 5 / 6 = '
+            const seventh_expr = '2 5 + 5 - 2'
+            const eighth_expr = '5 5 + '
+            const ninth_expr = '5   5 + 5 ='
+            const tenth_expr = '5 = 5'
+            const eleventh_expr = `4 4 + 5 
+             =
+            `
+            const twelfth_expr = '5 5 + ='
+            const thirteenth = '5 a + 4 ='
+            expect(checkFormat(first_expr)).toEqual(['Everything is correct!', true])
+            expect(checkFormat(second_expr)).toEqual(['The first character must be a number!', false])
+            expect(checkFormat(third_expr)).toEqual(['Everything is correct!', true])
+            expect(checkFormat(fourth_expr)).toEqual(['Missing delimiter, put a space between the symbols!', false])
+            expect(checkFormat(fifth_expr)).toEqual(['There should be only one action!', false])
+            expect(checkFormat(sixth_expr)).toEqual(['Everything is correct!', true])
+            expect(checkFormat(seventh_expr)).toEqual(['There should be only one action!', false])
+            expect(checkFormat(eighth_expr)).toEqual(['Everything is correct!', true])
+            expect(checkFormat(ninth_expr)).toEqual(['You have entered too many spaces!', false])
+            expect(checkFormat(tenth_expr)).toEqual(['Incorrect entry of operators!', false])
+            expect(checkFormat(eleventh_expr)).toEqual(['The expression must be on one line!', false])
+            expect(checkFormat(twelfth_expr)).toEqual(['Missing digit!', false])
+            expect(checkFormat(thirteenth)).toEqual(['You have entered an incorrect data type, only integers should be entered!', false])
         })
     })
 })
