@@ -1,4 +1,7 @@
 const { readDataFromFile, checkFormat, parseLine } = require('./src/parseLine')
+const { HandleKeyPress } = require('./src/utilityFunctions')
+const CalculatorState = require('./src/CalculatorState')
+
 
 describe('Checking functions that read and parse data from files', () => {
     describe('readDataFromFile function : ', () => {
@@ -67,3 +70,66 @@ describe('Checking functions that read and parse data from files', () => {
         })
     })
 })
+
+describe('Checking functions that work with the parsed expression', () => {
+    describe('HandleKeyPress function : ', () => {
+        let calcStateObj
+        beforeEach(() => {
+            calcStateObj = new CalculatorState()
+        })
+        test('The function must correctly specify two numbers and an operator | first_test', () => {
+            HandleKeyPress(calcStateObj, '1')
+            HandleKeyPress(calcStateObj, '1')
+            HandleKeyPress(calcStateObj, '+')
+            HandleKeyPress(calcStateObj, '5')
+            HandleKeyPress(calcStateObj, '=')
+            expect(calcStateObj.firstNum).toBe('11')
+            expect(calcStateObj.op).toBe('+')
+            expect(calcStateObj.secondNum).toBe('5')
+            expect(calcStateObj.equal).toBe('=')
+
+        })
+        test('The function must correctly specify two numbers and an operator | second_test', () => {
+            HandleKeyPress(calcStateObj, '4')
+            HandleKeyPress(calcStateObj, '5')
+            HandleKeyPress(calcStateObj, '*')
+            HandleKeyPress(calcStateObj, '3')
+            HandleKeyPress(calcStateObj, '3')
+            HandleKeyPress(calcStateObj, '=')
+            expect(calcStateObj.firstNum).toBe('45')
+            expect(calcStateObj.op).toBe('*')
+            expect(calcStateObj.secondNum).toBe('33')
+            expect(calcStateObj.equal).toBe('=')
+
+        })
+        test('The function must correctly specify two numbers and an operator | third_test', () => {
+            HandleKeyPress(calcStateObj, '1')
+            expect(calcStateObj.firstNum).toBe('1')
+            expect(calcStateObj.op).toBe('')
+            expect(calcStateObj.secondNum).toBe('')
+            expect(calcStateObj.equal).toBe('')
+        })
+        test('The function must correctly specify two numbers and an operator | fourth_test', () => {
+            HandleKeyPress(calcStateObj, '1')
+            HandleKeyPress(calcStateObj, '5')
+            HandleKeyPress(calcStateObj, '+')
+            expect(calcStateObj.firstNum).toBe('15')
+            expect(calcStateObj.op).toBe('+')
+            expect(calcStateObj.secondNum).toBe('')
+            expect(calcStateObj.equal).toBe('')
+
+        })
+        test('The function must correctly specify two numbers and an operator | fifth_test', () => {
+            HandleKeyPress(calcStateObj, '1')
+            HandleKeyPress(calcStateObj, '1')
+            HandleKeyPress(calcStateObj, '0')
+            HandleKeyPress(calcStateObj, '/')
+            HandleKeyPress(calcStateObj, '5')
+            expect(calcStateObj.firstNum).toBe('110')
+            expect(calcStateObj.op).toBe('/')
+            expect(calcStateObj.secondNum).toBe('5')
+            expect(calcStateObj.equal).toBe('')
+        })
+    })
+})
+
