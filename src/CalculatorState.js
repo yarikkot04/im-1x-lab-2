@@ -9,7 +9,7 @@ class CalculatorState {
     calculate(op) {
         switch(op) {
             case '+' :
-                this.result = this.firstNum + this.secondNum
+                this.result = +this.firstNum + +this.secondNum
                 break
             case '-' : 
                 this.result = this.firstNum - this.secondNum

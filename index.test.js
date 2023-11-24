@@ -56,7 +56,7 @@ describe('Checking functions that read and parse data from files', () => {
         })
     })
     describe('parseLine function : ', () => {
-        test('The function must return parsed data, if correct, otherwise return an error', async () => {
+        test('If the input format is correct, it should return parsed data', async () => { 
             const expected_correct_first_data = ['1', '2', '-', '4', '=']
             const expected_correct_second_data = ['1', '5', '*', '4']
 
@@ -64,8 +64,8 @@ describe('Checking functions that read and parse data from files', () => {
             const second__correct_data = await parseLine('./testfiles/parseLine/input_2.txt')
             expect(first__correct_data).toEqual(expected_correct_first_data)
             expect(second__correct_data).toEqual(expected_correct_second_data)
-
-            // If the input format is incorrect, it should throw an error
+        })
+        test('If the input format is incorrect, it should throw an error', () => {
             expect(parseLine('./testfiles/parseLine/input_3.txt')).rejects.toThrow()
             expect(parseLine('./testfiles/parseLine/input_4.txt')).rejects.toThrow()
         })
@@ -134,20 +134,68 @@ describe('Checking functions that work with the parsed expression', () => {
     })
 
     describe('Calculate function : ', () => {
-        test('The function must correctly calculate the expression', () => {
-            const first_data = ['1', '5', '*', '4']
-            const second_data = ['1', '5', '0', '*', '8', '=']
-            const third_data = ['3', '3', '/', '5', '=']
-            const fourth_data = ['1', '5']
-            const fifth_data = ['3', '3', '+']
-            const six_data = ['7', '5', '-', '8', '2', '=']
+        describe('The function must correctly calculate the expression', () => {
+            describe('Must correctly calculate when there is a complete expression', () => {
+                test('Checking the correctness of the "+" sign', () => {
+                    const first_data = ['1', '5', '0', '+', '8', '=']
+                    const second_data = ['3', '3', '+', '5', '=']
+                    const third_data = ['7', '5', '+', '8', '2', '=']
 
-            expect(Calculate(first_data)).toBe(4)
-            expect(Calculate(second_data)).toBe(1200)
-            expect(Calculate(third_data)).toBe(6)
-            expect(Calculate(fourth_data)).toBe(15)
-            expect(Calculate(fifth_data)).toBe(33)
-            expect(Calculate(six_data)).toBe(-7)
+                    expect(Calculate(first_data)).toBe(158)
+                    expect(Calculate(second_data)).toBe(38)
+                    expect(Calculate(third_data)).toBe(157)
+                })
+                test('Checking the correctness of the "-" sign', () => {
+                    const first_data = ['1', '4', '1', '-', '8', '=']
+                    const second_data = ['3', '3', '-', '5', '=']
+                    const third_data = ['2', '6', '5', '-', '8', '2', '=']
+
+                    expect(Calculate(first_data)).toBe(133)
+                    expect(Calculate(second_data)).toBe(28)
+                    expect(Calculate(third_data)).toBe(183)
+                })
+                test('Checking the correctness of the "*" sign', () => {
+                    const first_data = ['3', '3', '3', '*', '3', '7', '=']
+                    const second_data = ['6', '3', '*', '1', '5', '=']
+                    const third_data = ['3', '7', '*', '8', '1', '=']
+
+                    expect(Calculate(first_data)).toBe(12321)
+                    expect(Calculate(second_data)).toBe(945)
+                    expect(Calculate(third_data)).toBe(2997)
+                })
+                test('Checking the correctness of the "/" sign', () => {
+                    const first_data = ['3', '5', '0', '/', '7', '=']
+                    const second_data = ['6', '3', '/', '1', '5', '=']
+                    const third_data = ['1', '7', '5', '/', '8', '2', '=']
+
+                    expect(Calculate(first_data)).toBe(50)
+                    expect(Calculate(second_data)).toBe(4)
+                    expect(Calculate(third_data)).toBe(2)
+                })
+            })
+            test('Must return a second expression argument if there is no "=" sign', () => {
+                const first_data = ['1', '5', '*', '4']
+                const second_data = ['3', '7', '+', '1', '8']
+                const third_data = ['4', '2', '/', '7']
+
+                expect(Calculate(first_data)).toBe(4)
+                expect(Calculate(second_data)).toBe(18)
+                expect(Calculate(third_data)).toBe(7)
+            })
+            test('If only the first argument is specified, then must return it as a result', () => {
+                const first_data = ['6', '7', '*']
+                const second_data = ['1', '5']
+                const third_data = ['3', '3', '+']
+
+                expect(Calculate(first_data)).toBe(67)
+                expect(Calculate(second_data)).toBe(15)
+                expect(Calculate(third_data)).toBe(33)
+            })
+
+            test('If there is a division by zero throws error', () => {
+                const first_data = ['6', '7', '/', '0']
+                expect(() => Calculate(first_data)).toThrow(Error('Division by 0 is impossible!'))
+            })
         })
     })
 })
