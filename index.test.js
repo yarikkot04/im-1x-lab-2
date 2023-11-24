@@ -24,35 +24,101 @@ describe('Checking functions that read and parse data from files', () => {
         })
     })
     describe('checkFormat function : ', () => {
-        test('The function should check whether the condition is spelled correctly in the file', () => {
-            const first_expr = '5 5 0 + 6 7 5 5 5 ='
-            const second_expr = ' 5 + 1 ='
-            const third_expr = '1 1 * 2 = '
-            const fourth_expr = '2 34 + 8 ='
-            const fifth_expr = '2 5 + + 17 ='
-            const sixth_expr = '3 5 / 6 = '
-            const seventh_expr = '2 5 + 5 - 2'
-            const eighth_expr = '5 5 + '
-            const ninth_expr = '5   5 + 5 ='
-            const tenth_expr = '5 = 5'
-            const eleventh_expr = `4 4 + 5 
-             =
-            `
-            const twelfth_expr = '5 5 + ='
-            const thirteenth = '5 a + 4 ='
-            expect(checkFormat(first_expr)).toEqual(['Everything is correct!', true])
-            expect(checkFormat(second_expr)).toEqual(['The first character must be a number!', false])
-            expect(checkFormat(third_expr)).toEqual(['Everything is correct!', true])
-            expect(checkFormat(fourth_expr)).toEqual(['Missing delimiter, put a space between the symbols!', false])
-            expect(checkFormat(fifth_expr)).toEqual(['There should be only one action!', false])
-            expect(checkFormat(sixth_expr)).toEqual(['Everything is correct!', true])
-            expect(checkFormat(seventh_expr)).toEqual(['There should be only one action!', false])
-            expect(checkFormat(eighth_expr)).toEqual(['Everything is correct!', true])
-            expect(checkFormat(ninth_expr)).toEqual(['You have entered too many spaces!', false])
-            expect(checkFormat(tenth_expr)).toEqual(['Incorrect entry of operators!', false])
-            expect(checkFormat(eleventh_expr)).toEqual(['The expression must be on one line!', false])
-            expect(checkFormat(twelfth_expr)).toEqual(['Missing digit!', false])
-            expect(checkFormat(thirteenth)).toEqual(['You have entered an incorrect data type, only integers should be entered!', false])
+        describe('The function should check whether the condition is spelled correctly in the file', () => {
+
+            test('If the expression is entered correctly, the function returns an array containing the success status and the indicator true.', () => {
+                const first_expr = '5 5 0 + 6 7 5 5 5 ='
+                const second_expr = '1 1 * 2 = '
+                const third_expr = '3 5 / 6 = '
+                const fourth_expr = '5 5 + '
+
+                expect(checkFormat(first_expr)).toEqual(['Everything is correct!', true])
+                expect(checkFormat(second_expr)).toEqual(['Everything is correct!', true])
+                expect(checkFormat(third_expr)).toEqual(['Everything is correct!', true])
+                expect(checkFormat(fourth_expr)).toEqual(['Everything is correct!', true])
+            })
+
+            test('If the expression does not start with a digit, then an array is returned, with an error explanation and an indicator false', () => {
+                const first_expr = ' 1 1 + '
+                const second_expr = ' 5 - 1 ='
+                const third_expr = 'f 2 / 1 7'
+
+                expect(checkFormat(first_expr)).toEqual(['The first character must be a number!', false])
+                expect(checkFormat(second_expr)).toEqual(['The first character must be a number!', false])
+                expect(checkFormat(third_expr)).toEqual(['The first character must be a number!', false])
+            })
+
+            test('If there are no spaces between characters in the expression, then the array is returned, with an error explanation and the indicator false.', () => {
+                const first_expr = '2 34 + 8 ='
+                const second_expr = '25 - 1 3 ='
+                const third_expr = '3 2 * 17'
+
+                expect(checkFormat(first_expr)).toEqual(['Missing delimiter, put a space between the symbols!', false])
+                expect(checkFormat(second_expr)).toEqual(['Missing delimiter, put a space between the symbols!', false])
+                expect(checkFormat(third_expr)).toEqual(['Missing delimiter, put a space between the symbols!', false])
+            })
+
+            test('If there are several operators in the expression, then the array is returned, with an error explanation and the indicator false.', () => {
+                const first_expr = '2 5 + + 17 ='
+                const second_expr = '4 5 + 5 - 2'
+                const third_expr = '1 2 / 6 + 7 - 4'
+
+                expect(checkFormat(first_expr)).toEqual(['There should be only one action!', false])
+                expect(checkFormat(second_expr)).toEqual(['There should be only one action!', false])
+                expect(checkFormat(third_expr)).toEqual(['There should be only one action!', false])
+            })
+
+            test('If there are too many spaces in the expression, then the array is returned, with an error explanation and the indicator false.', () => {
+                const first_expr = '5   5 + 5 ='
+                const second_expr = '6 3 4 -     1 3 2 ='
+                const third_expr = '3 4   *   7 4 ='
+
+                expect(checkFormat(first_expr)).toEqual(['You have entered too many spaces!', false])
+                expect(checkFormat(second_expr)).toEqual(['You have entered too many spaces!', false])
+                expect(checkFormat(third_expr)).toEqual(['You have entered too many spaces!', false])
+            })
+
+            test('If operators are used incorrectly in the expression, an array is returned with an error explanation and the indicator false.', () => {
+                const first_expr = '5 = 5'
+                const second_expr = '7 = '
+                const third_expr = '1 2 = 3 4'
+
+                expect(checkFormat(first_expr)).toEqual(['Incorrect entry of operators!', false])
+                expect(checkFormat(second_expr)).toEqual(['Incorrect entry of operators!', false])
+                expect(checkFormat(third_expr)).toEqual(['Incorrect entry of operators!', false])
+            })
+
+            test('If the expression is written in several lines, then an array is returned with an error explanation and the indicator false.', () => {
+                const first_expr = `4 4 + 5 
+                =
+               `
+                const second_expr = '2 6 * 1 1 \n ='
+                const third_expr = '5 3 \n - 8 ='
+
+                expect(checkFormat(first_expr)).toEqual(['The expression must be on one line!', false])
+                expect(checkFormat(second_expr)).toEqual(['The expression must be on one line!', false])
+                expect(checkFormat(third_expr)).toEqual(['The expression must be on one line!', false])
+            })
+
+            test('If the expression omits a number before the "=" sign, then an array is returned with an error explanation and the indicator false.', () => {
+                const first_expr = '5 5 + ='
+                const second_expr = '8 * ='
+                const third_expr = '1 3 / ='
+
+                expect(checkFormat(first_expr)).toEqual(['Missing digit!', false])
+                expect(checkFormat(second_expr)).toEqual(['Missing digit!', false])
+                expect(checkFormat(third_expr)).toEqual(['Missing digit!', false])
+            })
+
+            test('If the expression contains invalid characters, then an array is returned with an error explanation and the indicator false.', () => {
+                const first_expr = '5 a + 4 ='
+                const second_expr = '3 4 - f ='
+                const third_expr = '7 a 3 / 2 ] ='
+
+                expect(checkFormat(first_expr)).toEqual(['You have entered an incorrect data type, only integers should be entered!', false])
+                expect(checkFormat(second_expr)).toEqual(['You have entered an incorrect data type, only integers should be entered!', false])
+                expect(checkFormat(third_expr)).toEqual(['You have entered an incorrect data type, only integers should be entered!', false])
+            })
         })
     })
     describe('parseLine function : ', () => {
@@ -129,6 +195,33 @@ describe('Checking functions that work with the parsed expression', () => {
             expect(calcStateObj.firstNum).toBe('110')
             expect(calcStateObj.op).toBe('/')
             expect(calcStateObj.secondNum).toBe('5')
+            expect(calcStateObj.equal).toBe('')
+        })
+        test('The function must correctly specify two numbers and an operator | sixth_test', () => {
+            HandleKeyPress(calcStateObj, '')
+            expect(calcStateObj.firstNum).toBe('')
+            expect(calcStateObj.op).toBe('')
+            expect(calcStateObj.secondNum).toBe('')
+            expect(calcStateObj.equal).toBe('')
+        })
+        test('The function must correctly specify two numbers and an operator | seventh_test', () => {
+            HandleKeyPress(calcStateObj, '')
+            HandleKeyPress(calcStateObj, '1')
+            HandleKeyPress(calcStateObj, '0')
+            HandleKeyPress(calcStateObj, '/')
+            HandleKeyPress(calcStateObj, '5')
+            expect(calcStateObj.firstNum).toBe('10')
+            expect(calcStateObj.op).toBe('/')
+            expect(calcStateObj.secondNum).toBe('5')
+            expect(calcStateObj.equal).toBe('')
+        })
+        test('The function must correctly specify two numbers and an operator | eigth_test', () => {
+            HandleKeyPress(calcStateObj, '3')
+            HandleKeyPress(calcStateObj, '7')
+            HandleKeyPress(calcStateObj, '4')
+            expect(calcStateObj.firstNum).toBe('374')
+            expect(calcStateObj.op).toBe('')
+            expect(calcStateObj.secondNum).toBe('')
             expect(calcStateObj.equal).toBe('')
         })
     })
